@@ -1,0 +1,68 @@
+---
+import Section from "./Section.astro";
+import Icon from "./Icon.astro";
+import { phones, email, telegram, viber, socials } from "../data/clinic";
+const socialIcon = { Instagram: "instagram", Facebook: "facebook", YouTube: "youtube", TikTok: "tiktok" } as const;
+---
+<Section id="contact" rec="R-001" class="section contact" label="Як записатися">
+  <div class="container contact__grid">
+    <div class="contact__head">
+      <h2>Як записатися</h2>
+      <p class="section__lead">Напишіть боту «Ася» або зателефонуйте в контакт-центр.</p>
+    </div>
+
+    <ul class="channels">
+      <li><a class="channel" href={telegram} target="_blank" rel="noopener"><Icon name="telegram" size={28} /><span class="channel__name">Telegram</span><span class="channel__sub">Написати Асі</span></a></li>
+      <li><a class="channel" href={viber}><Icon name="viber" size={28} /><span class="channel__name">Viber</span><span class="channel__sub">Написати Асі</span></a></li>
+    </ul>
+
+    <ul class="phones">
+      {phones.map((p) => <li><a class="phone" href={p.href}>{p.label}</a></li>)}
+      <li><a class="contact__mail" href={`mailto:${email}`}><Icon name="mail" size={20} /><span>{email}</span></a></li>
+    </ul>
+
+    <ul class="socials" aria-label="Соцмережі">
+      {socials.map((s) => <li><a href={s.href} target="_blank" rel="noopener"><Icon name={socialIcon[s.name as keyof typeof socialIcon]} size={22} /><span>{s.name}</span></a></li>)}
+    </ul>
+  </div>
+</Section>
+
+<style>
+  .contact__grid { display: grid; gap: var(--s-4); grid-template-columns: minmax(0, 1fr); }
+  .channels { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .channel {
+    display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: var(--s-2); align-items: center;
+    min-height: 96px; padding: var(--s-2) var(--s-3); border-radius: var(--radius);
+    background: var(--color-accent); color: var(--color-on-accent); text-decoration: none;
+    transition: background-color 160ms var(--ease-out);
+  }
+  .channel :global(.icon) { grid-row: 1 / span 2; }
+  .channel__name { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-24); }
+  .channel__sub { grid-column: 2; font-size: var(--fs-14); }
+  .channel:hover { background: var(--color-accent-hover); }
+  .channel:active { transform: translateY(1px); }
+  .phones { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-1); }
+  .phone {
+    display: inline-flex; align-items: center; min-height: 48px;
+    font-family: var(--font-display); font-weight: 600; font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
+    color: var(--color-text); text-decoration: none; font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  .phone:hover { color: var(--color-accent); text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 2px; }
+  .phone:active { transform: translateY(1px); }
+  .contact__mail { display: inline-flex; align-items: center; gap: var(--s-1); min-height: 44px; color: var(--color-accent); font-weight: 600; text-decoration: none; }
+  .contact__mail:hover span { text-decoration: underline; text-underline-offset: 4px; }
+  .socials { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-3); }
+  .socials a { display: inline-flex; align-items: center; gap: var(--s-1); min-height: 44px; color: var(--color-text); font-weight: 600; text-decoration: none; }
+  .socials a:hover { color: var(--color-accent); }
+  .socials a:hover span { text-decoration: underline; text-underline-offset: 4px; }
+
+  @media (max-width: 599px) { .channels { grid-template-columns: minmax(0, 1fr); } .channel { min-height: 72px; } }
+  @media (min-width: 900px) {
+    .contact__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: var(--s-6); }
+    .contact__head { grid-column: 1 / span 12; }
+    .channels { grid-column: 1 / span 6; grid-template-columns: minmax(0, 1fr); align-content: start; }
+    .channel { min-height: 112px; }
+    .phones { grid-column: 8 / span 5; align-content: start; }
+    .socials { grid-column: 1 / span 12; padding-top: var(--s-3); border-top: 1px solid var(--color-line); }
+  }
+</style>

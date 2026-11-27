@@ -1,0 +1,77 @@
+---
+// Channel panel for every «Записатися» (R-001): popover beside the button on wide screens, bottom sheet on phones.
+import Icon from "./Icon.astro";
+import { phones, telegram, viber } from "../data/clinic";
+const [first, ...rest] = phones;
+---
+<dialog class="book" id="book" aria-labelledby="book-title" data-rec="R-001">
+  <div class="book__inner">
+    <div class="book__head">
+      <h2 class="book__title" id="book-title">Записатися</h2>
+      <button class="book__close" type="button" data-book-close aria-label="Закрити"><Icon name="close" size={22} /></button>
+    </div>
+    <p class="book__lead">Запис через бота «Ася» або телефоном контакт-центру.</p>
+    <ul class="book__list">
+      <li><a class="book__ch" href={telegram} target="_blank" rel="noopener"><Icon name="telegram" size={22} /><span><strong>Написати Асі в Telegram</strong></span></a></li>
+      <li><a class="book__ch" href={viber}><Icon name="viber" size={22} /><span><strong>Написати у Viber</strong></span></a></li>
+      <li><a class="book__ch book__ch--tel" href={first.href}><Icon name="phone" size={22} /><span><strong>Подзвонити</strong> <span class="book__num">{first.label}</span></span></a></li>
+    </ul>
+    <p class="book__more">Інші номери: {rest.map((p, i) => <>{i > 0 && ", "}<a href={p.href}>{p.label}</a></>)}</p>
+  </div>
+</dialog>
+
+<style>
+  .book {
+    margin: 0; padding: 0; border: 0; color: var(--color-text); background: var(--color-surface);
+    width: 100%; max-width: 100%; max-height: 90dvh;
+    position: fixed; inset: auto 0 0 0; border-radius: 12px 12px 0 0;
+    box-shadow: 0 -16px 48px -16px var(--color-shadow);
+  }
+  .book::backdrop { background: var(--color-scrim); }
+  .book__inner { padding: var(--s-3) var(--space) var(--s-4); }
+  .book__head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
+  .book__title { font-size: var(--fs-24); }
+  .book__close {
+    display: inline-grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: var(--radius);
+    background: transparent; color: var(--color-text); cursor: pointer;
+  }
+  .book__close:hover { background: var(--color-brand-surface); }
+  .book__close:active { transform: translateY(1px); }
+  .book__lead { margin: var(--s-1) 0 var(--s-3); color: var(--color-muted); }
+  .book__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-1); }
+  .book__ch {
+    display: flex; align-items: center; gap: var(--s-2); min-height: 56px; padding: var(--s-1) var(--s-2);
+    border: 1px solid var(--color-line); border-radius: var(--radius); color: var(--color-text); text-decoration: none;
+    transition: border-color 160ms var(--ease-out), background-color 160ms var(--ease-out);
+  }
+  .book__ch :global(.icon) { flex: none; color: var(--color-accent); }
+  .book__ch:hover { border-color: var(--color-accent); background: var(--color-bg); }
+  .book__ch:active { transform: translateY(1px); }
+  .book__ch--tel { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-on-accent); }
+  .book__ch--tel :global(.icon) { color: var(--color-on-accent); }
+  .book__ch--tel:hover { background: var(--color-accent-hover); border-color: var(--color-accent-hover); }
+  .book__num { font-variant-numeric: tabular-nums; }
+  .book__more { margin: var(--s-2) 0 0; font-size: var(--fs-14); color: var(--color-muted); }
+  .book__more a { color: var(--color-accent); font-weight: 600; display: inline-block; padding-block: 12px; }
+
+  /* effect 4: sheet from below (phone), popover beside the button (wide) */
+  .book[open] { animation: sheet-in 280ms var(--ease-sheet) both; }
+  .book[open]::backdrop { animation: fade-in 200ms var(--ease-out) both; }
+  @keyframes sheet-in { from { transform: translateY(100%); } to { transform: none; } }
+  @keyframes pop-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+  @media (min-width: 900px) {
+    .book {
+      inset: var(--book-top, 96px) auto auto var(--book-left, auto); right: auto;
+      width: 400px; border-radius: var(--radius); box-shadow: 0 24px 64px -24px var(--color-shadow);
+    }
+    .book.is-centered { inset: 0; margin: auto; height: fit-content; }
+    .book::backdrop { background: transparent; }
+    .book[open] { animation-name: pop-in; animation-duration: 200ms; }
+    .book__inner { padding: var(--s-3); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .book[open] { animation: fade-in 120ms linear both; }
+  }
+</style>

@@ -1,0 +1,144 @@
+---
+import Section from "./Section.astro";
+import Icon from "./Icon.astro";
+import { addresses, SERVICE_LABEL, rangesLabel, mapHref, mainPhone, fullAddress } from "../data/clinic";
+
+const kinds = [
+  { key: "all", label: "Усі" },
+  { key: "doctors", label: "Прийом лікарів" },
+  { key: "lab", label: "Аналізи" },
+  { key: "mri", label: "МРТ" },
+  { key: "ct", label: "КТ" },
+];
+const cities = [
+  { key: "all", label: "Усі міста" },
+  { key: "Житомир", label: "Житомир" },
+  { key: "Бердичів", label: "Бердичів" },
+];
+---
+<Section id="locations" rec="R-005,S-R021" class="section locations on-deep" label="11 адрес і графік роботи">
+  <div class="container">
+    <div class="section__head loc-head">
+      <h2>11 адрес і графік роботи</h2>
+      <p class="section__lead">10 адрес у Житомирі, 1 — у Бердичеві. Статус «відчинено» рахується за графіком кожної адреси.</p>
+    </div>
+
+    <div class="filters" data-loc-filters>
+      <div class="filters__group" role="group" aria-label="Послуга">
+        {kinds.map((k, i) => <button type="button" class="chip" data-kind={k.key} aria-pressed={i === 0 ? "true" : "false"}>{k.label}</button>)}
+      </div>
+      <div class="filters__group" role="group" aria-label="Місто">
+        {cities.map((c, i) => <button type="button" class="chip" data-city={c.key} aria-pressed={i === 0 ? "true" : "false"}>{c.label}</button>)}
+      </div>
+    </div>
+    <p class="filters__count" aria-live="polite" data-loc-count></p>
+
+    <ul class="locs">
+      {addresses.map((a) => (
+        <li class="loc" data-loc={a.id} data-city={a.city} data-kinds={a.services.map((s) => s.kind).join(" ")}>
+          <div class="loc__place">
+            <h3 class="loc__street">{a.street}</h3>
+            <p class="loc__city">{a.city}{a.extra && `, ${a.extra}`}</p>
+          </div>
+          <dl class="loc__hours" id={`h-${a.id}`}>
+            {a.services.map((s) => (
+              <div class="loc__svc" data-kind={s.kind}>
+                <dt>{SERVICE_LABEL[s.kind]}{s.note && ` (${s.note})`}</dt>
+                <dd>{rangesLabel(s.ranges)}</dd>
+              </div>
+            ))}
+            {a.labNote && <div class="loc__svc loc__svc--none"><dt>Аналізи</dt><dd>{a.labNote}</dd></div>}
+          </dl>
+          <div class="loc__side">
+            <p class="loc__status" data-loc-status></p>
+            <div class="loc__actions">
+              <a class="loc__btn" href={mainPhone.href} aria-label={`Подзвонити: ${fullAddress(a)}`}><Icon name="phone" /><span>Подзвонити</span></a>
+              <button type="button" class="loc__btn loc__toggle" aria-expanded="false" aria-controls={`h-${a.id}`} data-loc-toggle><span>Графік і маршрут</span><Icon name="chevron" size={18} class="loc__chev" /></button>
+              <a class="loc__btn loc__map" href={mapHref(a)} target="_blank" rel="noopener" aria-label={`Маршрут на карті: ${fullAddress(a)} (відкриється в новій вкладці)`}><Icon name="map" /><span>Маршрут</span></a>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+    <p class="locs__empty" data-loc-empty hidden>За цим фільтром адрес немає.</p>
+    <p class="locs__note">Графік за даними клініки; у святкові дні уточнюйте за телефоном {mainPhone.label}.</p>
+  </div>
+</Section>
+
+<style>
+  .locations { background: var(--color-deep); color: var(--color-on-deep); }
+  .locations .section__lead { color: var(--color-on-deep-muted); max-width: 52ch; }
+
+  .filters { display: none; gap: var(--s-2) var(--s-4); margin-bottom: var(--s-2); align-items: center; }
+  :global(.js) .filters { display: flex; flex-wrap: wrap; }
+  .filters__group { display: flex; flex-wrap: wrap; gap: var(--s-1); }
+  .filters__count { margin: 0 0 var(--s-3); color: var(--color-on-deep-muted); font-size: var(--fs-14); min-height: 1.5em; }
+  .chip {
+    min-height: 44px; padding: 0 var(--s-2); border-radius: var(--radius); cursor: pointer;
+    border: 1px solid var(--color-deep-line); background: transparent; color: var(--color-on-deep);
+    font: 600 var(--fs-16)/1 var(--font-body);
+    transition: background-color 160ms var(--ease-out), border-color 160ms var(--ease-out), color 160ms var(--ease-out);
+  }
+  .chip:hover { border-color: var(--color-on-deep-muted); }
+  .chip:active { transform: translateY(1px); }
+  .chip:focus-visible { outline: 3px solid var(--color-signal); outline-offset: 2px; }
+  .chip[aria-pressed="true"] { background: var(--color-signal); border-color: var(--color-signal); color: var(--color-deep); }
+
+  .locs { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--color-deep-line); }
+  .loc {
+    display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-2);
+    padding-block: var(--s-3); border-top: 1px solid var(--color-deep-line);
+    transition: opacity 160ms var(--ease-out);
+  }
+  .loc.is-leaving { opacity: 0; }
+  .loc[hidden] { display: none; }
+  .loc__street { font-weight: 500; font-size: clamp(1.375rem, 1.1rem + .8vw, 1.75rem); }
+  .loc__city { margin: 4px 0 0; color: var(--color-on-deep-muted); font-size: var(--fs-14); }
+  .loc__hours { margin: 0; display: grid; gap: var(--s-1); }
+  .loc__svc { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .loc__svc dt { font-size: var(--fs-14); color: var(--color-on-deep-muted); }
+  .loc__svc dd { margin: 0; font-variant-numeric: tabular-nums; }
+  .loc__svc--none dd { color: var(--color-on-deep-muted); }
+  .loc__side { display: grid; gap: var(--s-2); align-content: start; }
+  .loc__status { margin: 0; display: none; align-items: center; gap: 12px; font-family: var(--font-display); font-weight: 500; font-size: var(--fs-16); }
+  .loc__status:not(:empty) { display: flex; }
+  .loc__status::before { content: ""; width: 10px; height: 10px; border-radius: 50%; flex: none; background: var(--color-on-deep-muted); }
+  .loc__status.is-open::before { background: var(--color-signal); }
+  .loc__status.is-closed { color: var(--color-on-deep-muted); }
+  .loc__actions { display: flex; flex-wrap: wrap; gap: var(--s-1); }
+  .loc__btn {
+    display: inline-flex; align-items: center; gap: var(--s-1); min-height: 44px; padding: 0 var(--s-2);
+    border-radius: var(--radius); border: 1px solid var(--color-deep-line); color: var(--color-on-deep); text-decoration: none; font-weight: 600;
+    transition: background-color 160ms var(--ease-out), border-color 160ms var(--ease-out);
+  }
+  .loc__btn :global(.icon) { color: var(--color-signal); }
+  .loc__btn:hover { background: var(--color-deep-line); border-color: var(--color-on-deep-muted); }
+  .loc__btn:active { transform: translateY(1px); }
+  .locs__empty { margin: var(--s-4) 0 0; font-size: var(--fs-20); }
+  .locs__note { margin: var(--s-3) 0 0; color: var(--color-on-deep-muted); font-size: var(--fs-14); }
+
+  .loc__toggle { display: none; background: transparent; font: inherit; font-weight: 600; cursor: pointer; }
+  .loc__toggle :global(.loc__chev) { transform: rotate(90deg); transition: transform 200ms var(--ease-out); }
+  .loc__toggle[aria-expanded="true"] :global(.loc__chev) { transform: rotate(-90deg); }
+  @media (max-width: 767px) {
+    .loc { display: flex; flex-direction: column; gap: var(--s-1); padding-block: var(--s-2); }
+    .loc__side { display: contents; }
+    .loc__place { order: 1; }
+    .loc__status { order: 2; }
+    .loc__actions { order: 3; margin-top: var(--s-1); flex-wrap: nowrap; }
+    .loc__btn { padding-inline: 12px; font-size: .9375rem; white-space: nowrap; }
+    .loc__toggle { flex: 1 1 auto; justify-content: space-between; }
+    :global(.js) .loc.is-open .loc__actions { flex-wrap: wrap; }
+    .loc__hours { order: 4; margin-top: var(--s-1); }
+    :global(.js) .loc__toggle { display: inline-flex; }
+    :global(.js) .loc:not(.is-open) .loc__hours, :global(.js) .loc:not(.is-open) .loc__map { display: none; }
+    :global(.js) .loc.is-open .loc__map { order: 5; }
+  }
+  @media (min-width: 900px) {
+    .loc { grid-template-columns: minmax(0, 4fr) minmax(0, 5fr) minmax(0, 3fr); column-gap: var(--gutter); align-items: start; padding-block: var(--s-4); }
+    .loc__svc { grid-template-columns: 9.5rem minmax(0, 1fr); column-gap: var(--s-2); }
+    .loc__svc dt { font-size: var(--fs-16); }
+    .loc__street { font-size: 1.75rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { .loc { transition: none; } }
+</style>

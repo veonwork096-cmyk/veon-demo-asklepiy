@@ -1,0 +1,68 @@
+---
+import { Image } from "astro:assets";
+import logo from "../assets/logo.webp";
+import FutureLink from "./FutureLink.astro";
+import { addresses, phones, email, socials, legal } from "../data/clinic";
+const zt = addresses.filter((a) => a.city === "Житомир");
+const bd = addresses.filter((a) => a.city === "Бердичів");
+---
+<footer class="footer on-deep">
+  <div class="container footer__grid">
+    <div class="footer__brand">
+      <a class="footer__logo" href="#top" aria-label="Медичний центр «Асклепій», на початок сторінки">
+        <Image src={logo} alt="" width={200} height={43} loading="lazy" />
+      </a>
+      <p class="footer__legal">{legal.name}<br />Код ЄДРПОУ {legal.edrpou}</p>
+      <p class="footer__legal">{legal.licence}</p>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__h">Адреси</h2>
+      <p class="footer__addr"><strong>Житомир:</strong> {zt.map((a) => a.street).join("; ")}.</p>
+      <p class="footer__addr"><strong>Бердичів:</strong> {bd.map((a) => a.street).join("; ")}.</p>
+      <a class="footer__link" href="#locations">Графік усіх адрес</a>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__h">Контакти</h2>
+      <ul class="footer__list">
+        {phones.map((p) => <li><a class="footer__link" href={p.href}>{p.label}</a></li>)}
+        <li><a class="footer__link" href={`mailto:${email}`}>{email}</a></li>
+      </ul>
+      <ul class="footer__list footer__social" aria-label="Соцмережі">
+        {socials.map((s) => <li><a class="footer__link" href={s.href} target="_blank" rel="noopener">{s.name}</a></li>)}
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__h">Клініка</h2>
+      <ul class="footer__list">
+        <li><FutureLink note="Розділ у розробці">Лікарі</FutureLink></li>
+        <li><FutureLink note="Розділ у розробці">Новини та акції</FutureLink></li>
+        <li><FutureLink note="Розділ у розробці">Про нас</FutureLink></li>
+        <li><FutureLink note="Розділ у розробці">Політика конфіденційності</FutureLink></li>
+      </ul>
+    </div>
+
+    <p class="footer__bottom">© 1999–2026 Медичний центр «Асклепій».</p>
+  </div>
+</footer>
+
+<style>
+  .footer { background: var(--color-deep); color: var(--color-on-deep); padding-block: var(--s-8) var(--s-6); }
+  .footer__grid { display: grid; gap: var(--s-4); grid-template-columns: minmax(0, 1fr); }
+  .footer__logo { display: inline-flex; margin-bottom: var(--s-2); }
+  .footer__logo img { width: 180px; height: auto; filter: brightness(0) invert(1); }
+  .footer__legal { margin: 0 0 var(--s-1); font-size: var(--fs-14); color: var(--color-on-deep-muted); }
+  .footer__h { font-family: var(--font-body); font-size: var(--fs-16); font-weight: 600; letter-spacing: 0; margin-bottom: var(--s-1); }
+  .footer__addr { margin: 0 0 var(--s-1); font-size: var(--fs-14); color: var(--color-on-deep-muted); }
+  .footer__addr strong { color: var(--color-on-deep); font-weight: 600; }
+  .footer__list { list-style: none; margin: 0 0 var(--s-2); padding: 0; }
+  .footer__social { display: flex; flex-wrap: wrap; gap: 0 var(--s-2); }
+  .footer__link { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-on-deep); text-decoration: none; font-variant-numeric: tabular-nums; }
+  .footer__link:hover { color: var(--color-signal); text-decoration: underline; text-underline-offset: 4px; }
+  .footer :global(.future-link) { font-weight: 500; }
+  .footer__bottom { margin: var(--s-2) 0 0; padding-top: var(--s-3); border-top: 1px solid var(--color-deep-line); font-size: var(--fs-14); color: var(--color-on-deep-muted); max-width: none; }
+  @media (min-width: 700px) { .footer__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); } .footer__bottom { grid-column: 1 / -1; } }
+  @media (min-width: 1100px) { .footer__grid { grid-template-columns: minmax(0, 4fr) minmax(0, 4fr) minmax(0, 2fr) minmax(0, 2fr); } }
+</style>

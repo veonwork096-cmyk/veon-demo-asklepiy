@@ -1,0 +1,199 @@
+---
+import { Picture } from "astro:assets";
+import Section from "./Section.astro";
+import FutureLink from "./FutureLink.astro";
+import BookButton from "./BookButton.astro";
+import Icon from "./Icon.astro";
+import surgery from "../assets/photos/surgery.webp";
+import pediatrician from "../assets/photos/pediatrician.webp";
+import xray from "../assets/photos/xray.webp";
+import or2 from "../assets/photos/or-2.webp";
+import reception from "../assets/photos/reception.webp";
+import lab from "../assets/photos/lab.webp";
+
+type Aud = "adult" | "child" | "both";
+interface Group {
+  key: string; name: string; count?: string; aud: Aud; text: string;
+  photo?: { src: ImageMetadata; alt: string; pos?: string; mobile?: boolean };
+  fact?: { big: string; small: string };
+}
+// Business lines from client.json (company.business_lines, products_services); numbers only where recorded.
+const groups: Group[] = [
+  { key: "adult", name: "Доросла поліклініка", count: "31 напрям", aud: "adult",
+    text: "Терапія, кардіологія, гінекологія, неврологія, ендокринологія, урологія, офтальмологія, отоларингологія, психіатрія, щеплення та інші",
+    photo: { src: reception, alt: "Адміністраторка на ресепшені клініки розмовляє з пацієнткою", pos: "55% 50%" } },
+  { key: "child", name: "Дитяча поліклініка", count: "22 напрями", aud: "child",
+    text: "Педіатрія, дитячі вузькі спеціалісти, логопедія, щеплення, довідки до школи та садочка",
+    photo: { src: pediatrician, alt: "Лікарка-педіатр дає «п'ять» маленькому пацієнтові у кабінеті", pos: "60% 50%", mobile: true } },
+  { key: "diag", name: "Діагностика", count: "17 методів", aud: "both",
+    text: "МРТ, КТ, УЗД, рентген, мамографія, ендоскопія, ЕКГ, ЕЕГ, ЕНМГ, Холтер, денситометрія, аудіометрія, діагностика родимок зі ШІ",
+    photo: { src: xray, alt: "Рентгенлаборантка за робочим місцем перед монітором зі знімком", pos: "45% 50%" } },
+  { key: "lab", name: "Асклепій Lab", aud: "both",
+    text: "Лабораторні аналізи: забір на 10 з 11 адрес, аналізи на дому",
+    photo: { src: lab, alt: "Лаборантка в рукавичках сканує пробірку з кров'ю біля дозаторів", pos: "40% 50%" } },
+  { key: "surgery", name: "Хірургія", count: "15 груп операцій", aud: "adult",
+    text: "Хірургічні операції для дорослих; для дітей — 5 груп операцій",
+    photo: { src: surgery, alt: "Хірурги клініки під час операції", pos: "40% 50%", mobile: true } },
+  { key: "child-surgery", name: "Дитяча хірургія", count: "5 груп операцій", aud: "child",
+    text: "Операції для дітей у хірургії центру",
+    fact: { big: "5", small: "груп операцій для дітей" } },
+  { key: "plastic", name: "Пластична хірургія", aud: "adult",
+    text: "Тулуб, обличчя, молочні залози, інтимна пластика",
+    fact: { big: "Тулуб, обличчя, молочні залози", small: "та інтимна пластика" } },
+  { key: "stationar", name: "Стаціонар", aud: "adult",
+    text: "Діагностика, операція і стаціонар — в одному центрі",
+    photo: { src: or2, alt: "Хірургічна бригада в операційній клініки", pos: "50% 50%" } },
+  { key: "checkup", name: "Check-Up", aud: "adult",
+    text: "Комплексні обстеження, наприклад «Check-Up для чоловіків до 50 років»",
+    fact: { big: "11 000 грн", small: "Check-Up для чоловіків до 50 років" } },
+];
+---
+<Section id="directions" rec="R-004" class="section directions" label="Напрями лікування">
+  <div class="container directions__grid">
+    <div class="directions__head section__head">
+      <h2>31 напрям для дорослих, 22 — для дітей</h2>
+      <p class="section__lead">Від консультації та аналізів до операції і стаціонару.</p>
+    </div>
+
+    <div class="directions__list" data-directions>
+      <div class="aud" role="group" aria-label="Для кого" data-aud-switch>
+        <button type="button" class="aud__btn" aria-pressed="true" data-aud="adult">Дорослим</button>
+        <button type="button" class="aud__btn" aria-pressed="false" data-aud="child">Дітям</button>
+      </div>
+
+      <ul class="groups">
+        {groups.map((g, i) => (
+          <li class="group" data-group={g.key} data-for={g.aud} data-index={i}>
+            <div class="group__head">
+              <h3 class="group__name">
+                <button type="button" class="group__btn" aria-expanded="true" aria-controls={`g-${g.key}`} data-group-btn>
+                  <span class="group__title">{g.name}</span>
+                  <Icon name="chevron" size={22} class="group__chev" />
+                </button>
+              </h3>
+              {g.count && <p class="group__count">{g.count}</p>}
+            </div>
+            <div class="group__body" id={`g-${g.key}`}>
+              <div class="group__inner">
+                <p class="group__text">{g.text}</p>
+                <FutureLink note="Розділ у розробці" class="group__more">Сторінка напряму</FutureLink>
+                {g.photo?.mobile && (
+                  <figure class="photo group__photo">
+                    <Picture src={g.photo.src} alt={g.photo.alt} widths={[400, 640]} sizes="(max-width: 899px) 100vw, 640px" formats={["avif", "webp"]} fallbackFormat="webp" loading="lazy" style={`object-position:${g.photo.pos ?? "50% 50%"}`} />
+                    <figcaption>фото клініки</figcaption>
+                  </figure>
+                )}
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div class="directions__foot">
+        <BookButton size="l" />
+        <p class="directions__other">
+          <FutureLink note="Розділ у розробці">Асклепій Відновлення</FutureLink>
+          <span>— реабілітація, вертебрологія, ортопедія, неврологія, косметологія та дерматологія: окремий центр мережі.</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="frame" aria-hidden="true" data-frame>
+      <div class="frame__stage">
+        {groups.map((g, i) => (
+          <div class:list={["frame__layer", i === 0 && "is-active", g.fact && "frame__layer--fact"]} data-layer={g.key}>
+            {g.photo ? (
+              <figure class="photo frame__photo">
+                <Picture src={g.photo.src} alt="" widths={[640, 1024]} sizes="(min-width: 1440px) 520px, 36vw" formats={["avif", "webp"]} fallbackFormat="webp" loading="lazy" style={`object-position:${g.photo.pos ?? "50% 50%"}`} />
+                <figcaption>фото клініки</figcaption>
+              </figure>
+            ) : (
+              <div class="frame__fact">
+                <span class="frame__big">{g.fact!.big}</span>
+                <span class="frame__small">{g.fact!.small}</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .directions__grid { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .directions__head { margin-bottom: var(--s-4); }
+
+  .aud { display: none; gap: 4px; padding: 4px; margin-bottom: var(--s-3); border-radius: calc(var(--radius) + 4px); background: var(--color-brand-surface); width: fit-content; }
+  :global(.js) .aud { display: inline-flex; }
+  .aud__btn {
+    min-height: 44px; padding: 0 var(--s-3); border: 0; border-radius: var(--radius); cursor: pointer;
+    background: transparent; color: var(--color-text); font: 600 var(--fs-16)/1 var(--font-body);
+    transition: background-color 160ms var(--ease-out), color 160ms var(--ease-out);
+  }
+  .aud__btn:hover { background: var(--color-surface); }
+  .aud__btn:active { transform: translateY(1px); }
+  .aud__btn[aria-pressed="true"] { background: var(--color-accent); color: var(--color-on-accent); }
+
+  .groups { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--color-line); }
+  .group { border-top: 1px solid var(--color-line); }
+  .group[hidden] { display: none; }
+  .group__name { font-size: inherit; margin: 0; }
+  .group__head { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .group__btn {
+    width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: var(--s-2);
+    min-height: 56px; padding: var(--s-2) 0; border: 0; background: none; text-align: left; cursor: pointer; color: var(--color-text);
+    font: inherit;
+  }
+  .group__title { font-family: var(--font-display); font-weight: 500; font-size: var(--fs-h3); line-height: 1.15; }
+  .group__count { margin: -12px 0 var(--s-2); font-weight: 600; color: var(--color-muted); font-variant-numeric: tabular-nums; }
+  .group__btn :global(.group__chev) { align-self: center; color: var(--color-accent); transform: rotate(90deg); transition: transform 240ms var(--ease-out); }
+  .group__btn[aria-expanded="false"] :global(.group__chev) { transform: rotate(0deg); }
+  .group__btn:hover .group__title { color: var(--color-accent); }
+  .group__btn:focus-visible { outline-offset: -1px; }
+  .group__inner { padding-bottom: var(--s-2); display: grid; gap: 0; justify-items: start; }
+  .group__text { margin: 0; color: var(--color-muted); }
+  .group__body[hidden] { display: none; }
+  :global(.js) .group__body:not([hidden]) .group__inner { animation: body-in 240ms var(--ease-out) both; }
+  @keyframes body-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+  .group__photo { width: 100%; aspect-ratio: 3 / 2; }
+
+  .directions__foot { margin-top: var(--s-4); display: grid; gap: var(--s-3); justify-items: start; }
+  .directions__other { margin: 0; color: var(--color-muted); }
+
+  .frame { display: none; }
+
+  @media (min-width: 900px) {
+    .directions__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); }
+    .directions__head { grid-column: 1 / span 12; margin-bottom: var(--s-6); }
+    .directions__list { grid-column: 1 / span 7; }
+    .frame { display: block; grid-column: 8 / span 5; }
+    .frame__stage { position: sticky; top: calc(var(--header-h) + var(--s-3)); aspect-ratio: 4 / 5; }
+    .group__head { grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; column-gap: var(--s-2); }
+    .group__btn { padding: var(--s-3) 0 var(--s-1); cursor: default; }
+    .group__count { margin: 0; }
+    .group__btn :global(.group__chev) { display: none; }
+    .group__photo { display: none; }
+    .group__inner { padding-bottom: var(--s-3); }
+    .group.is-active .group__title { color: var(--color-accent); }
+    :global(.js) .group__body:not([hidden]) .group__inner { animation: none; }
+  }
+
+  .frame__layer { position: absolute; inset: 0; opacity: 0; transition: opacity 320ms var(--ease-out); }
+  .frame__layer.is-active { opacity: 1; }
+  .frame__photo { width: 100%; height: 100%; }
+  .frame__photo :global(img) { transform: scale(1.02); transition: transform 600ms var(--ease-out); }
+  .frame__layer.is-active .frame__photo :global(img) { transform: scale(1); }
+  .frame__fact {
+    height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--s-2);
+    padding: var(--s-6) var(--s-4); background: var(--color-brand-surface); border-radius: var(--radius);
+  }
+  .frame__big { font-family: var(--font-display); font-weight: 600; font-size: clamp(3rem, 1rem + 4vw, 5.5rem); line-height: 1; letter-spacing: -.02em; color: var(--color-text); font-variant-numeric: tabular-nums; }
+  .frame__small { font-size: var(--fs-20); color: var(--color-text); max-width: 22ch; }
+  .frame__layer[data-layer="plastic"] .frame__big { font-size: clamp(2rem, 1rem + 2vw, 3rem); line-height: 1.1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .frame__layer, .frame__photo :global(img) { transition: none; }
+    .frame__photo :global(img) { transform: none; }
+  }
+</style>

@@ -1,0 +1,61 @@
+---
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import Directions from "../components/Directions.astro";
+import Lab from "../components/Lab.astro";
+import Locations from "../components/Locations.astro";
+import Family from "../components/Family.astro";
+import Prices from "../components/Prices.astro";
+import Trust from "../components/Trust.astro";
+import Contact from "../components/Contact.astro";
+import Footer from "../components/Footer.astro";
+import BookDialog from "../components/BookDialog.astro";
+import MobileBar from "../components/MobileBar.astro";
+import { addresses, phones, email, socials, legal, SERVICE_LABEL, fullAddress } from "../data/clinic";
+
+const h1 = "Медичний центр «Асклепій» — 11 адрес у Житомирі та Бердичеві";
+const title = "Медичний центр «Асклепій» у Житомирі — лікарі, аналізи, МРТ, КТ";
+const description = "Багатопрофільний центр у Житомирі та Бердичеві з 1999 року: лікарі для дорослих і дітей, аналізи, МРТ і КТ, хірургія. Запис у Telegram, Viber, телефоном.";
+
+const DAY_SCHEMA = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "MedicalClinic",
+  name: "Медичний центр «Асклепій»",
+  legalName: legal.name,
+  foundingDate: legal.founded,
+  telephone: phones.map((p) => p.href.replace("tel:", "")),
+  email,
+  sameAs: socials.map((s) => s.href),
+  department: addresses.map((a) => ({
+    "@type": "MedicalClinic",
+    name: `«Асклепій», ${a.street}`,
+    description: a.services.map((s) => SERVICE_LABEL[s.kind]).join(", "),
+    address: { "@type": "PostalAddress", streetAddress: a.street, addressLocality: a.city, addressCountry: "UA" },
+    openingHoursSpecification: a.services.flatMap((s) => s.ranges.map((r) => ({
+      "@type": "OpeningHoursSpecification",
+      name: SERVICE_LABEL[s.kind],
+      dayOfWeek: r.d.map((d) => DAY_SCHEMA[d]),
+      opens: r.from,
+      closes: r.to,
+    }))),
+    hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress(a))}`,
+  })),
+};
+---
+<Base lang="uk" title={title} description={description}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <Header slot="header" />
+  <Hero h1={h1} />
+  <Directions />
+  <Lab />
+  <Locations />
+  <Family />
+  <Prices />
+  <Trust />
+  <Contact />
+  <Footer slot="footer" />
+  <BookDialog slot="footer" />
+  <MobileBar slot="footer" />
+</Base>

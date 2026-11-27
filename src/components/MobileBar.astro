@@ -1,0 +1,34 @@
+---
+// One bottom bar on phones instead of four floating widgets (R-003). Shows once the hero has left the screen.
+import BookButton from "./BookButton.astro";
+import Icon from "./Icon.astro";
+import { mainPhone } from "../data/clinic";
+---
+<div class="mbar" data-mbar data-rec="R-003">
+  <BookButton size="m" class="mbar__book" />
+  <a class="mbar__call" href={mainPhone.href}><Icon name="phone" size={20} /><span>Подзвонити</span></a>
+</div>
+
+<style>
+  .mbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s-1);
+    padding: var(--s-1) var(--space) calc(var(--s-1) + env(safe-area-inset-bottom));
+    background: var(--color-surface); border-top: 1px solid var(--color-line);
+    transition: transform 280ms var(--ease-sheet);
+  }
+  :global(.js) .mbar:not(.is-shown) { transform: translateY(110%); }
+  .mbar :global(.mbar__book) { width: 100%; }
+  .mbar__call {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--s-1); min-height: 48px;
+    border: 1px solid var(--color-accent); border-radius: var(--radius); color: var(--color-accent); font-weight: 600; text-decoration: none;
+  }
+  .mbar__call:hover { background: var(--color-brand-surface); }
+  .mbar__call:active { transform: translateY(1px); }
+  :global(body) { padding-bottom: 72px; }
+  @media (min-width: 900px) {
+    .mbar { display: none; }
+    :global(body) { padding-bottom: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { .mbar { transition: none; } }
+</style>

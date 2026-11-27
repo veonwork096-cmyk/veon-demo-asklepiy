@@ -1,0 +1,185 @@
+---
+import Section from "./Section.astro";
+import BookButton from "./BookButton.astro";
+import Icon from "./Icon.astro";
+import { mainPhone } from "../data/clinic";
+
+interface Props { h1: string }
+const { h1 } = Astro.props;
+const [h1a, h1b] = h1.split(" — ");
+const [n, w, ...restWords] = h1b.split(" ");
+const h1tail = restWords.join(" ");
+
+const pointers = [
+  { href: "#directions", label: "До лікаря" },
+  { href: "#lab", label: "Здати аналізи" },
+  { href: "#lab", label: "МРТ і КТ" },
+  { href: "#family", label: "Сімейний лікар" },
+  { href: "#prices", label: "Ціни" },
+  { href: "#locations", label: "Адреси" },
+];
+
+// Static schedule = the SSR text of the board; scripts/schedule.ts swaps it for the live status.
+const rows = [
+  { key: "mri", name: "МРТ", where: "вул. Покровська, 31", plain: "щодня 06:00–23:30" },
+  { key: "doctors", name: "Прийом лікарів", where: "8 адрес, найпізніше — Чорновола, 8а", plain: "пн–сб до 23:00" },
+  { key: "lab", name: "Забір аналізів", where: "10 адрес", plain: "з 07:00" },
+  { key: "ct", name: "КТ", where: "вул. Фещенка-Чопівського, 24/4", plain: "пн–пт 08:00–20:00" },
+];
+---
+<Section id="hero" rec="R-002" class="hero">
+  <div class="container hero__grid">
+    <h1 class="hero__title"><span class="hero__line">{h1a} —</span> <span class="hero__line"><span class="nowrap">{n} {w}</span> {h1tail}</span></h1>
+
+    <div class="hero__main">
+      <p class="hero__lead">Поліклініка<span class="hero__long"> для дорослих і дітей</span>, аналізи, МРТ і <span class="nowrap">КТ<span class="hero__long">, хірургія та стаціонар</span> —</span> з&nbsp;1999 року.</p>
+      <div class="hero__actions">
+        <BookButton size="l" class="hero__book" />
+        <a class="btn-text hero__call" href={mainPhone.href}><Icon name="phone" size={22} /><span>Подзвонити <span class="hero__call-num">{mainPhone.label}</span></span></a>
+      </div>
+    </div>
+
+    <a class="strip" href="#locations" data-strip data-rec="R-005">
+      <span class="strip__text" data-strip-text>МРТ щодня 06:00–23:30</span>
+      <Icon name="chevron" size={22} />
+    </a>
+
+    <nav class="hero__pointers" aria-label="Що вам потрібно">
+      <ul>
+        {pointers.map((p) => <li><a href={p.href}><span>{p.label}</span><Icon name="chevron" size={18} /></a></li>)}
+      </ul>
+    </nav>
+
+    <aside class="board" aria-labelledby="board-title" data-rec="R-005">
+      <div class="board__title" id="board-title"><span data-board-title>Графік роботи</span></div>
+      <ul class="board__rows">
+        {rows.map((r) => (
+          <li class="board__row" data-board={r.key}>
+            <span class="board__what"><span class="board__name">{r.name}</span><span class="board__where">{r.where}</span></span>
+            <span class="board__status"><span class="board__lamp" aria-hidden="true"></span><span class="board__text" data-board-text>{r.plain}</span></span>
+          </li>
+        ))}
+      </ul>
+      <div class="board__foot">
+        <a class="board__all" href="#locations"><span>Усі 11 адрес</span><Icon name="chevron" size={18} /></a>
+        <p class="board__note">Графік за даними клініки; у святкові дні уточнюйте за телефоном.</p>
+      </div>
+    </aside>
+  </div>
+</Section>
+
+<style>
+  .hero { padding-block: var(--s-3) var(--s-6); }
+  .hero__grid { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: var(--s-3); }
+  .hero__title {
+    margin: 0; font-family: var(--font-display); font-weight: 600; font-size: var(--fs-h1);
+    line-height: 1.12; letter-spacing: -.01em; color: var(--color-text); text-wrap: initial;
+  }
+  .hero__line { display: inline; }
+  .nowrap { white-space: nowrap; }
+  .hero__lead { margin: 0 0 var(--s-3); font-size: 1.0625rem; line-height: 1.5; color: var(--color-muted); max-width: 34ch; }
+  .hero__long { display: none; }
+  .hero__actions { display: grid; gap: var(--s-1); }
+  .hero__actions :global(.hero__book) { width: 100%; }
+  .hero__call { justify-content: center; min-height: var(--tap); white-space: nowrap; }
+  .hero__call-num { display: none; }
+
+  .strip {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--s-2);
+    min-height: 64px; padding: var(--s-1) var(--s-2); border-radius: var(--radius);
+    background: var(--color-deep); color: var(--color-on-deep); text-decoration: none;
+    font-weight: 600; line-height: 1.3;
+  }
+  .strip:hover { background: var(--color-accent-hover); }
+  .strip:active { transform: translateY(1px); }
+  .strip:focus-visible { outline-color: var(--color-accent); }
+  .strip :global(.icon) { flex: none; color: var(--color-signal); }
+
+  .hero__pointers ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-2); }
+  .hero__pointers a {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--s-1);
+    min-height: 52px; border-top: 1px solid var(--color-line);
+    font-weight: 600; font-size: var(--fs-16); color: var(--color-text); text-decoration: none; white-space: nowrap;
+  }
+  @media (max-width: 419px) { .hero__pointers a { font-size: .9375rem; } .hero__pointers ul { column-gap: var(--s-2); } }
+  .hero__pointers a :global(.icon) { flex: none; color: var(--color-accent); transition: transform 200ms var(--ease-out); }
+  .hero__pointers a:hover { color: var(--color-accent); }
+  .hero__pointers a:hover :global(.icon) { transform: translateX(3px); }
+  .hero__pointers a:active { transform: translateY(1px); }
+
+  .board { display: none; }
+
+  @media (min-width: 600px) {
+    .hero__actions { grid-auto-flow: column; justify-content: start; align-items: center; gap: var(--s-3); }
+    .hero__actions :global(.hero__book) { width: auto; }
+    .hero__call-num { display: inline; }
+    .hero__lead { max-width: 44ch; }
+  }
+
+  @media (min-width: 768px) {
+    .strip { display: none; }
+    .board { display: flex; flex-direction: column; order: 3; margin-top: var(--s-3); }
+    .hero__pointers { order: 4; }
+  }
+
+  @media (min-width: 1280px) {
+    .hero { padding-block: var(--s-8) var(--s-6); }
+    .hero__grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: 0;
+      grid-template-areas:
+        "t t t t t t t t t t t ."
+        "m m m m m m . b b b b b"
+        "p p p p p p . b b b b b";
+      grid-template-rows: auto auto 1fr;
+      align-items: start;
+    }
+    .hero__title { grid-area: t; line-height: 1.06; margin-bottom: var(--s-6); }
+    .hero__line { display: block; }
+    .hero__main { grid-area: m; }
+    .hero__long { display: inline; }
+    .hero__lead { font-size: var(--fs-20); line-height: 1.5; max-width: 30em; margin-bottom: var(--s-4); }
+    .hero__pointers { grid-area: p; align-self: start; margin-top: var(--s-5); }
+    .hero__pointers ul { column-gap: var(--gutter); }
+    .hero__pointers a { min-height: 48px; }
+    .board { grid-area: b; margin-top: 0; }
+  }
+
+  /* the board (signature): fixed row heights, CLS 0 when the live status replaces the schedule */
+  .board {
+    background: var(--color-deep); color: var(--color-on-deep); border-radius: var(--radius);
+    padding: var(--s-3) var(--s-4) var(--s-3);
+  }
+  .board__title { margin: 0 0 var(--s-1); font-family: var(--font-display); font-weight: 500; font-size: var(--fs-20); min-height: 32px; }
+  .board__rows { list-style: none; margin: 0; padding: 0; }
+  .board__row {
+    display: grid; grid-template-columns: minmax(0, 1fr) max-content; align-items: center; gap: var(--s-2);
+    height: 76px; border-top: 1px solid var(--color-deep-line);
+  }
+  .board__what { display: grid; min-width: 0; }
+  .board__name { font-weight: 600; font-size: var(--fs-16); color: var(--color-on-deep); }
+  .board__where { font-size: var(--fs-14); line-height: 1.35; color: var(--color-on-deep-muted); }
+  .board__status { display: inline-flex; align-items: center; gap: 12px; justify-self: end; text-align: right; }
+  .board__text {
+    font-family: var(--font-display); font-weight: 500; font-size: var(--fs-20); color: var(--color-on-deep);
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  .board__lamp { display: none; width: 10px; height: 10px; border-radius: 50%; background: var(--color-signal); flex: none; }
+  .board__row.is-open .board__lamp { display: block; }
+  .board__row.is-closed .board__text { color: var(--color-on-deep-muted); }
+  .board__foot { margin-top: auto; padding-top: var(--s-2); border-top: 1px solid var(--color-deep-line); display: grid; gap: var(--s-1); }
+  .board__all {
+    display: inline-flex; align-items: center; gap: var(--s-1); justify-self: start; min-height: 44px;
+    color: var(--color-signal); font-weight: 600; text-decoration: none;
+  }
+  .board__all:hover span { text-decoration: underline; text-underline-offset: 4px; }
+  .board__all:active { transform: translateY(1px); }
+  .board__all:focus-visible, .board :global(a:focus-visible) { outline-color: var(--color-signal); }
+  .board__note { margin: 0; font-size: var(--fs-14); color: var(--color-on-deep-muted); }
+
+  /* effect 1: the status fades in when the board switches to «зараз» */
+  :global(.js) .board__text.is-live, :global(.js) .strip__text.is-live { animation: board-in 220ms var(--ease-out) both; animation-delay: var(--row-delay, 0ms); }
+  @keyframes board-in { from { opacity: 0; } to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) .board__text.is-live, :global(.js) .strip__text.is-live { animation: none; }
+  }
+</style>

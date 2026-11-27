@@ -1,0 +1,71 @@
+---
+import { Picture } from "astro:assets";
+import Section from "./Section.astro";
+import FutureLink from "./FutureLink.astro";
+import BookButton from "./BookButton.astro";
+import Icon from "./Icon.astro";
+import mri from "../assets/photos/mri.webp";
+---
+<Section id="lab" class="section lab" label="Аналізи, МРТ і КТ">
+  <div class="container">
+    <div class="section__head">
+      <h2>Аналізи, МРТ і КТ</h2>
+    </div>
+
+    <div class="lab__grid">
+      <div class="lab__tests">
+        <h3>Аналізи — Асклепій Lab</h3>
+        <p class="fact lab__fact" data-reveal>10 з 11</p>
+        <p class="lab__cap">адрес мережі приймають на забір аналізів</p>
+        <p class="lab__text">Усі, крім вул. Чорновола, 8а. Найраніше — з 07:00: Покровська, 31, Шевченка, 14 і проїзд Шпаковський, 18.</p>
+        <a class="btn-text lab__near" href="#locations" data-set-filter="lab"><Icon name="map" size={22} /><span>Де здати поруч</span></a>
+        <ul class="lab__future">
+          <li><FutureLink note="Розділ у розробці">Аналізи на дому</FutureLink></li>
+          <li><FutureLink note="Розділ у розробці">Ціни на аналізи</FutureLink></li>
+        </ul>
+      </div>
+
+      <div class="lab__scan">
+        <h3>МРТ і КТ</h3>
+        <p class="fact lab__fact lab__fact--time" data-reveal>06:00–23:30</p>
+        <p class="lab__cap">МРТ щодня — вул. Покровська, 31</p>
+        <div class="lab__scan-row">
+          <figure class="photo lab__photo">
+            <Picture src={mri} alt="Лаборантка біля апарата МРТ Siemens, пацієнтка на столі томографа" widths={[480, 800, 1200]} sizes="(min-width: 1200px) 320px, (min-width: 600px) 45vw, 100vw" formats={["avif", "webp"]} fallbackFormat="webp" loading="lazy" />
+            <figcaption>фото клініки</figcaption>
+          </figure>
+          <div class="lab__ct">
+            <p class="lab__ct-time">пн–пт 08:00–20:00</p>
+            <p class="lab__ct-text">КТ — вул. Фещенка-Чопівського, 24/4</p>
+            <BookButton label="Записатися на обстеження" size="l" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .lab__grid { display: grid; gap: var(--s-8); grid-template-columns: minmax(0, 1fr); }
+  .lab h3 { font-size: var(--fs-24); font-weight: 500; margin-bottom: var(--s-3); }
+  .lab__fact { margin: 0; color: var(--color-text); }
+  .lab__fact--time { font-size: clamp(2.25rem, 1rem + 6.4vw, 5rem); }
+  .lab__cap { margin: var(--s-1) 0 0; font-size: var(--fs-20); font-weight: 600; }
+  .lab__text { margin: var(--s-3) 0 var(--s-2); color: var(--color-muted); max-width: 46ch; }
+  .lab__near { margin-bottom: var(--s-2); }
+  .lab__future { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-4); }
+  .lab__scan-row { display: grid; gap: var(--s-3); margin-top: var(--s-4); grid-template-columns: minmax(0, 1fr); }
+  .lab__photo { aspect-ratio: 4 / 5; max-width: 420px; }
+  .lab__ct { display: grid; gap: var(--s-1); align-content: end; justify-items: start; }
+  .lab__ct-time { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: var(--fs-h3); font-variant-numeric: tabular-nums; }
+  .lab__ct-text { margin: 0 0 var(--s-3); color: var(--color-muted); }
+
+  @media (min-width: 600px) {
+    .lab__scan-row { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: end; }
+  }
+  @media (min-width: 1200px) {
+    .lab__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); }
+    .lab__tests { grid-column: 1 / span 5; padding-top: var(--s-1); }
+    .lab__scan { grid-column: 6 / span 7; padding-left: var(--s-6); border-left: 1px solid var(--color-line); }
+  }
+</style>

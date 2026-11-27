@@ -1,0 +1,66 @@
+---
+import Section from "./Section.astro";
+import FutureLink from "./FutureLink.astro";
+import BookButton from "./BookButton.astro";
+
+// C-009: three items of the clinic price list, checked 27.11.2026.
+const items = [
+  { price: "600", name: "Консультація терапевта" },
+  { price: "450", name: "УЗД щитовидної залози" },
+  { price: "11 000", name: "Check-Up для чоловіків до 50 років" },
+];
+---
+<Section id="prices" class="section prices" label="Ціни">
+  <div class="container prices__grid">
+    <div class="prices__head">
+      <h2>Прайс у гривнях і поліси 28 страхових компаній</h2>
+      <p class="prices__note">За прайсом клініки, перевірено 27.11.2026.</p>
+    </div>
+
+    <ul class="prices__list">
+      {items.map((it) => (
+        <li class="price">
+          <span class="price__name">{it.name}</span>
+          <span class="price__sum"><span class="fact price__num" data-reveal>{it.price}</span><span class="price__cur">грн</span></span>
+        </li>
+      ))}
+    </ul>
+
+    <div class="prices__side">
+      <p class="prices__ins">Обслуговуємо за полісами 28 страхових компаній.</p>
+      <ul class="prices__future">
+        <li><FutureLink note="Розділ у розробці">Повний прайс</FutureLink></li>
+        <li><FutureLink note="Розділ у розробці">Check-Up</FutureLink></li>
+        <li><FutureLink note="Розділ у розробці">Страхові партнери</FutureLink></li>
+      </ul>
+      <BookButton size="l" />
+    </div>
+  </div>
+</Section>
+
+<style>
+  .prices { background: var(--color-surface); }
+  .prices__grid { display: grid; gap: var(--s-4); grid-template-columns: minmax(0, 1fr); }
+  .prices__note { margin: var(--s-1) 0 0; font-size: var(--fs-14); color: var(--color-muted); }
+  .prices__list { list-style: none; margin: 0; padding: 0; }
+  .price {
+    display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-1);
+    padding-block: var(--s-3); border-top: 1px solid var(--color-line);
+  }
+  .price:last-child { border-bottom: 1px solid var(--color-line); }
+  .price__name { font-size: var(--fs-20); font-weight: 600; }
+  .price__sum { display: inline-flex; align-items: baseline; gap: var(--s-1); }
+  .price__num { font-size: clamp(2.75rem, 1.6rem + 4vw, 5.5rem); color: var(--color-text); font-variant-numeric: tabular-nums; }
+  .price__cur { font-family: var(--font-display); font-weight: 500; font-size: var(--fs-24); color: var(--color-muted); }
+  .prices__ins { margin: 0 0 var(--s-2); font-size: var(--fs-20); font-weight: 600; max-width: 24ch; }
+  .prices__future { list-style: none; margin: 0 0 var(--s-3); padding: 0; display: grid; justify-items: start; }
+
+  @media (min-width: 900px) {
+    .prices__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: var(--s-6); align-items: start; }
+    .prices__head { grid-column: 1 / span 12; }
+    .prices__list { grid-column: 1 / span 8; }
+    .price { grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; column-gap: var(--s-4); }
+    .price__sum { justify-self: end; }
+    .prices__side { grid-column: 10 / span 3; padding-top: var(--s-3); }
+  }
+</style>

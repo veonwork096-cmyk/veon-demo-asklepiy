@@ -1,0 +1,148 @@
+---
+import logo from "../assets/logo.webp";
+import { Image } from "astro:assets";
+import FutureLink from "./FutureLink.astro";
+import BookButton from "./BookButton.astro";
+import Icon from "./Icon.astro";
+import { mainPhone, telegram, viber } from "../data/clinic";
+
+const nav = [
+  { href: "#directions", label: "Напрями" },
+  { href: "#family", label: "Сімейний лікар" },
+  { href: "#lab", label: "Аналізи та МРТ/КТ" },
+  { href: "#locations", label: "Адреси" },
+  { href: "#prices", label: "Ціни" },
+];
+---
+<header class="site-header" data-header data-rec="R-003">
+  <div class="container site-header__row">
+    <a class="site-header__logo" href="#top" aria-label="Медичний центр «Асклепій», на початок сторінки">
+      <Image src={logo} alt="" width={166} height={36} loading="eager" />
+    </a>
+
+    <nav class="site-nav" aria-label="Головне меню">
+      <ul>
+        {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+        <li><FutureLink note="Розділ у розробці">Лікарі</FutureLink></li>
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <a class="site-header__tel" href={mainPhone.href}>
+        <Icon name="phone" size={22} />
+        <span class="site-header__tel-text">{mainPhone.label}</span>
+        <span class="visually-hidden site-header__tel-sr">Подзвонити</span>
+      </a>
+      <BookButton size="s" class="site-header__book" />
+      <details class="menu" data-menu>
+        <summary class="menu__toggle" aria-label="Меню">
+          <Icon name="menu" size={24} class="menu__open" />
+          <Icon name="close" size={24} class="menu__close" />
+        </summary>
+        <div class="menu__panel">
+          <nav aria-label="Меню розділів">
+            <ul class="menu__list">
+              {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+              <li><a href="#contact">Контакти</a></li>
+              <li><FutureLink note="Розділ у розробці">Лікарі</FutureLink></li>
+            </ul>
+          </nav>
+          <ul class="menu__channels" aria-label="Зв'язатися">
+            <li><a href={telegram} rel="noopener" target="_blank"><Icon name="telegram" />Telegram</a></li>
+            <li><a href={viber}><Icon name="viber" />Viber</a></li>
+            <li><a href={mainPhone.href}><Icon name="phone" />{mainPhone.label}</a></li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky; top: 0; z-index: 40;
+    background: var(--color-bg);
+    border-bottom: 1px solid transparent;
+    transition: border-color 200ms var(--ease-out);
+  }
+  .site-header.is-scrolled { border-bottom-color: var(--color-line); }
+  .site-header__row { display: flex; align-items: center; gap: var(--s-3); height: var(--header-h); }
+  .site-header__logo { display: inline-flex; flex: none; padding-block: 4px; }
+  .site-header__logo img { width: 132px; height: auto; }
+
+  .site-nav { display: none; }
+  .site-nav ul { display: flex; gap: 20px; list-style: none; margin: 0; padding: 0; align-items: center; }
+  .site-nav a, .site-nav :global(.future-link) {
+    display: inline-flex; align-items: center; min-height: 44px;
+    font-size: var(--fs-16); font-weight: 600; text-decoration: none; color: var(--color-text);
+  }
+  .site-nav a:hover { color: var(--color-accent); text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 2px; }
+  .site-nav :global(.future-link) { color: var(--color-text); font-weight: 600; text-decoration: none; cursor: default; }
+  .site-nav :global(.future-link:hover) { color: var(--color-accent); }
+
+  .site-header__actions { margin-left: auto; display: flex; align-items: center; gap: var(--s-1); }
+  .site-header__tel {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--s-1);
+    min-width: 44px; min-height: 44px; color: var(--color-accent); text-decoration: none; font-weight: 600;
+    font-variant-numeric: tabular-nums; border-radius: var(--radius);
+  }
+  .site-header__tel:hover { color: var(--color-accent-hover); }
+  .site-header__tel:hover .site-header__tel-text { text-decoration: underline; text-underline-offset: 4px; }
+  .site-header__tel:active { transform: translateY(1px); }
+  .site-header__tel-text { display: none; }
+
+  .menu { position: static; }
+  .menu__toggle {
+    list-style: none; display: inline-grid; place-items: center; width: 44px; height: 44px; cursor: pointer;
+    border-radius: var(--radius); color: var(--color-text);
+  }
+  .menu__toggle::-webkit-details-marker { display: none; }
+  .menu__toggle:hover { background: var(--color-brand-surface); }
+  .menu__toggle:active { transform: translateY(1px); }
+  .menu :global(.menu__close), .menu[open] :global(.menu__open) { display: none; }
+  .menu[open] :global(.menu__close) { display: block; }
+  .menu__panel {
+    position: fixed; left: 0; right: 0; top: var(--header-h);
+    max-height: calc(100dvh - var(--header-h)); overflow-y: auto;
+    background: var(--color-surface);
+    box-shadow: 0 24px 48px -24px var(--color-shadow);
+    padding: var(--s-2) var(--space) var(--s-4);
+  }
+  .menu__list, .menu__channels { list-style: none; margin: 0; padding: 0; }
+  .menu__list a, .menu__list :global(.future-link) {
+    display: flex; align-items: center; min-height: 52px; border-bottom: 1px solid var(--color-line);
+    font-family: var(--font-display); font-weight: 500; font-size: var(--fs-20); text-decoration: none; color: var(--color-text);
+  }
+  .menu__list :global(.future-link) { color: var(--color-text); text-decoration: none; cursor: default; }
+  .menu__list a:hover { color: var(--color-accent); }
+  .menu__channels { display: grid; gap: var(--s-1); margin-top: var(--s-3); }
+  .menu__channels a {
+    display: flex; align-items: center; gap: var(--s-2); min-height: 48px; padding-inline: var(--s-2);
+    border: 1px solid var(--color-line); border-radius: var(--radius); text-decoration: none; font-weight: 600; color: var(--color-text);
+  }
+  .menu__channels a:hover { border-color: var(--color-accent); color: var(--color-accent); }
+
+  .site-header__tel, .menu__channels a, .site-nav a, .menu__list a { white-space: nowrap; }
+  @media (max-width: 419px) {
+    .site-header__logo img { width: 112px; }
+    .site-header__actions { gap: 4px; }
+    .site-header__row { gap: var(--s-2); }
+    .site-header__actions :global(.btn--s) { padding-inline: 12px; }
+  }
+  @media (max-width: 359px) {
+    .site-header__actions :global(.site-header__book) { display: none; }
+  }
+  @media (min-width: 900px) {
+    .site-header__logo img { width: 166px; }
+    .site-header__tel-text { display: inline; }
+    .site-header__tel { padding-inline: var(--s-1); }
+    .site-header__actions { gap: var(--s-2); }
+  }
+  @media (min-width: 1280px) {
+    .site-nav { display: block; margin-left: var(--s-2); }
+    .menu { display: none; }
+  }
+  @media (min-width: 1360px) {
+    .site-nav ul { gap: var(--s-4); }
+  }
+</style>

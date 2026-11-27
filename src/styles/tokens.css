@@ -1,0 +1,61 @@
+/* Hallmark · shape: departure board, index-first · genre: editorial · theme: custom · job: book · idea: "Асклепій — це розклад міста: кожен екран відповідає, де, коли і скільки, точними фактами клініки, набраними великими, як на табло" · vibe: "cool, exact, civic, calm, timetable-clear" · paper: #F6F8FA · accent: #2B5C8E · display: Geologica · body: Mulish · hero: typographic H1 over a live board of MRI, doctors, lab and CT hours beside book and call · nav: one row, client logo left, five anchors and a future link, phone as text, book button · footer: deep-blue mast with legal name, licence, addresses, phones, socials · imagery: client photos · signature: the «відчинено зараз» board computed from the real hours of 11 addresses
+ * surface: absolute · axes: cool-paper/geometric-grotesk/brand-blue · posture: committed · contrast: pass · fold: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S5 R4 V4 · weakest: imagery, only clinic photos in three places (directions frame, lab, family) and one mosaic; groups without a photo carry a typographic fact instead */
+/* Hallmark · waive 44c · H1 is 9 words · the H1 text is fixed by the approved concept (veon-concept h1) and names the network fact the page is built on */
+/* Hallmark · waive 7b · --color-surface/--color-on-accent/--color-on-deep #FFFFFF · white is in the approved palette (concept 8.12, veon-concept colors): panels and text on brand blue; the paper itself is tinted #F6F8FA */
+/* Hallmark · waive 39b · primary «Записатися» stands 56px and the directions group rows carry a 36px group name · concept 8.12 sets primary buttons at 56/48 px and the index rows are headings people tap on a phone */
+/* Hallmark · answered F25 · on phones the hero board becomes one live strip linking to #locations (concept 8.4); the full schedule of all 11 addresses is in #locations at every width */
+/* Client design tokens: only from design/concept.md (veon-concept: colors, fonts; 8.12 design system). */
+:root {
+  /* colour roles (concept 8.12) */
+  --color-bg: #F6F8FA;            /* paper */
+  --color-surface: #FFFFFF;       /* panels */
+  --color-brand-surface: #E5ECF6; /* family, fact frames */
+  --color-text: #0E1B2B;          /* ink */
+  --color-muted: #4A5A6C;         /* ink-muted */
+  --color-accent: #2B5C8E;        /* primary / CTA, brand blue C-015 */
+  --color-accent-hover: #234C76;  /* primary 8% darker */
+  --color-on-accent: #FFFFFF;
+  --color-accent-ink: #FFFFFF;    /* text on accent fills */
+  --color-deep: #163A5F;          /* board, locations, footer */
+  --color-deep-line: #2C5379;     /* hairline on deep */
+  --color-on-deep: #FFFFFF;
+  --color-on-deep-muted: #C9D6E3;
+  --color-signal: #A8E0D2;        /* «відчинено» */
+  --color-line: #D5DDE6;
+  --color-scrim: rgb(14 27 43 / .45);
+  --color-shadow: rgb(14 27 43 / .16);
+
+  /* type (concept 8.12: Geologica display + Mulish text, scale 1.25) */
+  --font-display: "Geologica Variable", "Geologica", "Geologica Fallback", system-ui, sans-serif;
+  --font-body: "Mulish Variable", "Mulish", "Mulish Fallback", system-ui, sans-serif;
+  --fs-14: .875rem;
+  --fs-16: 1rem;
+  --fs-20: 1.25rem;
+  --fs-24: 1.5rem;
+  --fs-h3: clamp(1.375rem, 1.1rem + .9vw, 2.25rem);   /* 22 → 36 */
+  --fs-h2: clamp(1.75rem, 1.3rem + 1.6vw, 3rem);      /* 28 → 48 */
+  --fs-h1: clamp(2.125rem, 1.35rem + 3.1vw, 4rem);    /* 34 → 64 */
+  --fs-fact: clamp(3rem, 1.8rem + 5vw, 6.5rem);       /* big facts: hours, prices, date */
+
+  /* grid and rhythm (8 px) */
+  --container: 1320px;
+  --gutter: 24px;
+  --space: clamp(20px, 4.2vw, 60px);                  /* page side margin: 20 → 60 */
+  --s-1: 8px; --s-2: 16px; --s-3: 24px; --s-4: 32px; --s-5: 40px; --s-6: 48px; --s-8: 64px; --s-12: 96px; --s-16: 128px;
+  --section-y: clamp(64px, 3rem + 6vw, 144px);
+  --header-h: 56px;
+  --radius: 4px;
+  --tap: 48px;
+
+  /* motion (concept 8.7) */
+  --ease-out: cubic-bezier(.2, .7, .2, 1);
+  --ease-sheet: cubic-bezier(.2, .8, .2, 1);
+  --dur: 560ms;
+}
+@media (min-width: 900px) {
+  :root { --header-h: 72px; }
+}
+@media (max-width: 899px) {
+  :root { --dur: 400ms; }
+}

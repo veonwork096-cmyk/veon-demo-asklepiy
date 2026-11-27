@@ -1,0 +1,55 @@
+---
+import { Picture } from "astro:assets";
+import Section from "./Section.astro";
+import BookButton from "./BookButton.astro";
+import or1 from "../assets/photos/or-1.webp";
+import or3 from "../assets/photos/or-3.webp";
+import xrayRoom from "../assets/photos/xray-room.webp";
+---
+<Section id="trust" class="section trust" label="З 1999 року">
+  <div class="container trust__grid">
+    <div class="trust__text">
+      <h2>Дата заснування</h2>
+      <p class="fact trust__date" data-reveal><time datetime="1999-05-12">12.05.1999</time></p>
+      <p class="trust__lead">Цього дня засновано «Асклепій» — перший приватний медичний заклад у Житомирській області.</p>
+      <ul class="trust__facts">
+        <li>Ліцензія МОЗ серія АЕ №460148 від 30.04.2014</li>
+        <li>Повний цикл в одному центрі: поліклініка, діагностика, лабораторія, хірургія, стаціонар</li>
+      </ul>
+      <BookButton label="Записатися на консультацію" size="l" />
+    </div>
+
+    <div class="trust__mosaic">
+      <figure class="photo trust__a">
+        <Picture src={or1} alt="Операційна клініки: хірурги біля операційного столу" widths={[640, 1000]} sizes="(min-width: 900px) 40vw, 100vw" formats={["avif", "webp"]} fallbackFormat="webp" loading="lazy" />
+        <figcaption>фото клініки</figcaption>
+      </figure>
+      <figure class="photo trust__b">
+        <Picture src={or3} alt="Операційна бригада під час втручання" widths={[480, 1000]} sizes="(min-width: 900px) 20vw, 50vw" formats={["avif", "webp"]} fallbackFormat="webp" loading="lazy" />
+      </figure>
+      <figure class="photo trust__c">
+        <Picture src={xrayRoom} alt="Рентгенкабінет: пацієнт біля апарата, на моніторі знімок" widths={[480, 1000]} sizes="(min-width: 900px) 20vw, 50vw" formats={["avif", "webp"]} fallbackFormat="webp" loading="lazy" />
+      </figure>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .trust__grid { display: grid; gap: var(--s-6); grid-template-columns: minmax(0, 1fr); }
+  .trust h2 { font-size: var(--fs-24); font-weight: 500; color: var(--color-muted); text-wrap: balance; }
+  .trust__date { margin: var(--s-2) 0 var(--s-3); color: var(--color-text); font-size: clamp(3rem, 1.2rem + 6.4vw, 7rem); }
+  .trust__lead { margin: 0 0 var(--s-4); font-size: var(--fs-20); line-height: 1.5; max-width: 36ch; }
+  .trust__facts { list-style: none; margin: 0 0 var(--s-4); padding: 0; }
+  .trust__facts li { padding-block: var(--s-2); border-top: 1px solid var(--color-line); color: var(--color-muted); max-width: 52ch; }
+  .trust__facts li:last-child { border-bottom: 1px solid var(--color-line); }
+
+  .trust__mosaic { display: grid; gap: var(--s-1); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .trust__a { grid-column: 1 / span 2; aspect-ratio: 3 / 2; }
+  .trust__b, .trust__c { aspect-ratio: 1 / 1; }
+
+  @media (min-width: 900px) {
+    .trust__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); align-items: center; }
+    .trust__text { grid-column: 1 / span 5; }
+    .trust__mosaic { grid-column: 7 / span 6; gap: var(--gutter); }
+  }
+</style>

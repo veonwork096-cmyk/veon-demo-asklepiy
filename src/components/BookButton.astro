@@ -1,0 +1,7 @@
+---
+// «Записатися»: opens the channel panel (BookDialog). Without scripts it is a plain anchor to #contact,
+// where the same real channels are listed, so the action never dead-ends (R-001).
+interface Props { label?: string; size?: "l" | "m" | "s"; class?: string; id?: string }
+const { label = "Записатися", size = "l", class: cls, id, ...rest } = Astro.props;
+---
+<a href="#contact" id={id} class:list={["btn", `btn--${size}`, cls]} data-book aria-haspopup="dialog" data-rec="R-001,S-R020,G-R001,M-R001" {...rest}>{label}</a>
